@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  registry:
+    image: registry
+    restart: always
+    container_name: registry
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./registry/data:/var/lib/registry
+      - ./registry/config.yml:/etc/docker/registry/config.yml:ro
+    links:
+      - redis
+    environment:
+      SETTINGS_FLAVOR: local
+      SEARCH_BACKEND: sqlalchemy
+      CACHE_REDIS_HOST: redis
+      CACHE_REDIS_PORT: 6380
+      CACHE_LRU_REDIS_HOST: redis
+      CACHE_LRU_REDIS_PORT: 6380
+
+  redis:
+    image: library/redis:5.0-alpine
+    ports:
+      - 6380:6379
+    restart: unless-stopped
+
+  ui:
+    image: joxit/docker-registry-ui:static
+    container_name: registry-ui
+    restart: always
+    ports:
+      - "${UI_PORT}:80"
+    environment:
+      REGISTRY_URL: $REGISTRY_URL
+      REGISTRY_TITLE: $REGISTRY_TITLE
+      CATALOG_ELEMENTS_LIMIT: $CATALOG_ELEMENTS_LIMIT
+      SINGLE_REGISTRY: true
+      DELETE_IMAGES: true
+      NGINX_PROXY_PASS_URL: http://registry:5000

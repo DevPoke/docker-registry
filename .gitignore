@@ -1,0 +1,13 @@
+
+# local configs
+registry/storage
+.env
+
+# pycharm
+.idea
+
+# IOS
+.DS_Store
+
+# Visual studio
+.vscode
