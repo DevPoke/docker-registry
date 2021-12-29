@@ -7,6 +7,8 @@ services:
     volumes:
       - storage:/var/lib/registry
       - ./registry/config.yml:/etc/docker/registry/config.yml:ro
+    ports:
+      - "5000:5000"
 #    networks:
 #      - registry-ui-net
 
