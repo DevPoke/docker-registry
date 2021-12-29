@@ -6,7 +6,7 @@ log:
 
 storage:
   cache:
-    blobdescriptor: redis
+    blobdescriptor: inmemory
   filesystem:
     rootdirectory: /var/lib/registry
   delete:
@@ -16,9 +16,9 @@ http:
   addr: :5000
   http:
     headers:
-      # TODO after DNS configuration
-      # Access-Control-Allow-Origin: [ 'http://registry.example.com' ]
+      X-Content-Type-Options: [nosniff]
       Access-Control-Allow-Origin: ['*']
+      # Access-Control-Allow-Origin: [ 'https://ecommerce.pokestudio.it' ]
       Access-Control-Allow-Credentials: [ true ]
       Access-Control-Allow-Headers: ['Authorization', 'Accept']
       Access-Control-Allow-Methods: ['HEAD', 'GET', 'OPTIONS', 'DELETE' ]
@@ -32,5 +32,5 @@ auth:
 health:
   storagedriver:
     enabled: true
-    interval: 10s
+    interval: 60s
     threshold: 3
