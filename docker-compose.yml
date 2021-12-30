@@ -6,6 +6,8 @@ services:
     container_name: registry
     volumes:
       - storage:/var/lib/registry
+      # TODO FixMe
+#      - ./registry/htpassword:/etc/docker/registry/htpassword
       - ./registry/config.yml:/etc/docker/registry/config.yml:ro
     ports:
       - "5000:5000"
