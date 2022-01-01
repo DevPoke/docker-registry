@@ -10,7 +10,7 @@ services:
 #      - ./registry/htpassword:/etc/docker/registry/htpassword
       - ./registry/config.yml:/etc/docker/registry/config.yml:ro
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
 #    networks:
 #      - registry-ui-net
 
