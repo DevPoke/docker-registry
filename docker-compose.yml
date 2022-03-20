@@ -6,7 +6,7 @@ services:
     container_name: registry
     volumes:
       - ./registry/data/:/var/lib/registry
-      - ./registry/htpassword:/etc/docker/registry/.htpasswd-users:ro
+      - ./registry/.htpasswd-users:/etc/docker/registry/.htpasswd-users:ro
       - ./registry/config.yml:/etc/docker/registry/config.yml:ro
     networks:
       - web
