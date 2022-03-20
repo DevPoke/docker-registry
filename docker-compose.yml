@@ -10,6 +10,8 @@ services:
       - ./registry/config.yml:/etc/docker/registry/config.yml:ro
     networks:
       - web
+    environment:
+      - REGISTRY_HTTP_SECRET: $REGISTRY_HTTP_SECRET
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.registry.rule=Host(`$REGISTRY_HOST`)"
