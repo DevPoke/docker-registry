@@ -16,3 +16,9 @@ cp .env.example .env
 htpasswd -Bc registry/.htpasswd-users <username> <htpasswd>
 docker-compose up -d
 ```
+
+# Docker login on client server
+
+```shell
+docker login -u pokestudio registry.pokestudio.it
+```
