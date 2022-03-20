@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+  registry:
+    image: registry:latest
+    restart: always
+    container_name: registry
+    volumes:
+      - ./registry/data/:/var/lib/registry
+      - ./registry/.htpasswd-users:/etc/docker/registry/.htpasswd-users:ro
+      - ./registry/config.yml:/etc/docker/registry/config.yml:ro
+    networks:
+      - web
+    environment:
+      REGISTRY_HTTP_SECRET: $REGISTRY_HTTP_SECRET
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.rule=Host(`$REGISTRY_HOST`) && PathPrefix(`/v2/`)"
+      - "traefik.http.routers.registry.entrypoints=websecure"
+      - "traefik.http.routers.registry.tls.certresolver=leresolver"
+      - "traefik.http.routers.registry.service=registry"
+      - "traefik.http.services.registry.loadbalancer.server.port=5000"
+
+  registry-ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: registry-ui
+    restart: always
+    environment:
+      REGISTRY_URL: $REGISTRY_URL
+      REGISTRY_TITLE: $REGISTRY_TITLE
+      CATALOG_ELEMENTS_LIMIT: $CATALOG_ELEMENTS_LIMIT
+      SINGLE_REGISTRY: "true"
+      DELETE_IMAGES: "true"
+    depends_on:
+      - registry
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry-ui.rule=Host(`$REGISTRY_HOST`)"
+      - "traefik.http.routers.registry-ui.entrypoints=websecure"
+      - "traefik.http.routers.registry-ui.tls.certresolver=leresolver"
+      - "traefik.http.routers.registry-ui.service=registry-ui"
+      - "traefik.http.services.registry-ui.loadbalancer.server.port=80"
+
+networks:
+  web:
+    external: true

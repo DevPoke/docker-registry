@@ -1,0 +1,38 @@
+# https://docs.docker.com/registry/configuration/
+version: 0.1
+
+log:
+  level: info
+  fields:
+    service: registry
+
+storage:
+  cache:
+    blobdescriptor: inmemory
+  filesystem:
+    rootdirectory: /var/lib/registry
+  delete:
+    enabled: true
+
+http:
+  addr: :5000
+  host: https://registry.pokestudio.it
+  http:
+    headers:
+      X-Content-Type-Options: [nosniff]
+      Access-Control-Allow-Origin: ['registry.pokestudio.it']
+      Access-Control-Allow-Credentials: [ true ]
+      Access-Control-Allow-Headers: ['Authorization', 'Accept']
+      Access-Control-Allow-Methods: ['HEAD', 'GET', 'OPTIONS', 'DELETE' ]
+      Access-Control-Expose-Headers: ['Docker-Content-Digest']
+
+auth:
+  htpasswd:
+    realm: Registry Realm
+    path: /etc/docker/registry/.htpasswd-users
+
+health:
+  storagedriver:
+    enabled: true
+    interval: 60s
+    threshold: 3
