@@ -1,6 +1,8 @@
+# https://docs.docker.com/registry/configuration/
 version: 0.1
 
 log:
+  level: info
   fields:
     service: registry
 
@@ -13,11 +15,12 @@ storage:
     enabled: true
 
 http:
-  addr: :5000
+  addr: 0.0.0.0:5000
+  host: https://registry.pokestudio.it
   http:
     headers:
       X-Content-Type-Options: [nosniff]
-      Access-Control-Allow-Origin: ['*']
+      Access-Control-Allow-Origin: ['registry.pokestudio.it']
       Access-Control-Allow-Credentials: [ true ]
       Access-Control-Allow-Headers: ['Authorization', 'Accept']
       Access-Control-Allow-Methods: ['HEAD', 'GET', 'OPTIONS', 'DELETE' ]
@@ -26,7 +29,7 @@ http:
 auth:
   htpasswd:
     realm: Registry Realm
-    path: /etc/docker/registry/htpasswd
+    path: /etc/docker/registry/.htpasswd-users
 
 health:
   storagedriver:

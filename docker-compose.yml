@@ -5,36 +5,41 @@ services:
     restart: always
     container_name: registry
     volumes:
-      - storage:/var/lib/registry
-      # TODO FixMe
-#      - ./registry/htpassword:/etc/docker/registry/htpassword
+      - ./registry/data/:/var/lib/registry
+      - ./registry/htpassword:/etc/docker/registry/.htpasswd-users:ro
       - ./registry/config.yml:/etc/docker/registry/config.yml:ro
-    ports:
-      - "127.0.0.1:5000:5000"
-#    networks:
-#      - registry-ui-net
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.rule=Host(`$REGISTRY_HOST`)"
+      - "traefik.http.routers.registry.entrypoints=websecure"
+      - "traefik.http.routers.registry.tls.certresolver=leresolver"
+      - "traefik.http.routers.registry.service=registry"
+      - "traefik.http.services.registry.loadbalancer.server.port=5000"
 
-#  ui:
-#    image: joxit/docker-registry-ui:1.5-static
-#    container_name: registry-ui
-#    restart: always
-#    ports:
-#      - "${UI_PORT}:80"
-#    environment:
-#      # REGISTRY_URL: $REGISTRY_URL
-#      REGISTRY_TITLE: $REGISTRY_TITLE
-#      CATALOG_ELEMENTS_LIMIT: $CATALOG_ELEMENTS_LIMIT
-#      SINGLE_REGISTRY: "true"
-#      DELETE_IMAGES: "true"
-#      # NGINX_PROXY_PASS_URL: http://registry:5000
-#    depends_on:
-#      - registry
-#    networks:
-#      - registry-ui-net
-#
-#networks:
-#  registry-ui-net:
+  registry-ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: registry-ui
+    restart: always
+    environment:
+      REGISTRY_URL: $REGISTRY_URL
+      REGISTRY_TITLE: $REGISTRY_TITLE
+      CATALOG_ELEMENTS_LIMIT: $CATALOG_ELEMENTS_LIMIT
+      SINGLE_REGISTRY: "true"
+      DELETE_IMAGES: "true"
+    depends_on:
+      - registry
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry-ui.rule=Host(`$REGISTRY_HOST`)"
+      - "traefik.http.routers.registry-ui.entrypoints=websecure"
+      - "traefik.http.routers.registry-ui.tls.certresolver=leresolver"
+      - "traefik.http.routers.registry-ui.service=registry-ui"
+      - "traefik.http.services.registry.loadbalancer.server.port=8080"
 
-volumes:
-    storage:
-      driver: local
+networks:
+  web:
+    external: true

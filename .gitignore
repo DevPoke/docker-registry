@@ -1,6 +1,8 @@
 
 # local configs
-registry/storage
+registry/data
+registry/config.yml
+
 .env
 
 # pycharm
