@@ -2,6 +2,7 @@
 # local configs
 registry/data
 registry/config.yml
+registry/.htpasswd-users
 
 .env
 
