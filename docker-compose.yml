@@ -12,13 +12,17 @@ services:
       - web
     environment:
       REGISTRY_HTTP_SECRET: $REGISTRY_HTTP_SECRET
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.registry.rule=Host(`$REGISTRY_HOST`) && PathPrefix(`/v2/`)"
-      - "traefik.http.routers.registry.entrypoints=websecure"
-      - "traefik.http.routers.registry.tls.certresolver=leresolver"
-      - "traefik.http.routers.registry.service=registry"
-      - "traefik.http.services.registry.loadbalancer.server.port=5000"
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.registry.rule=Host(`$REGISTRY_HOST`) && PathPrefix(`/v1`, `/v2`)"
+        - "traefik.http.routers.registry.entrypoints=websecure"
+        - "traefik.http.routers.registry.tls.certresolver=leresolver"
+        - "traefik.http.routers.registry.service=registry"
+        - "traefik.http.services.registry.loadbalancer.server.port=5000"
 
   registry-ui:
     image: joxit/docker-registry-ui:latest
@@ -34,13 +38,17 @@ services:
       - registry
     networks:
       - web
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.registry-ui.rule=Host(`$REGISTRY_HOST`)"
-      - "traefik.http.routers.registry-ui.entrypoints=websecure"
-      - "traefik.http.routers.registry-ui.tls.certresolver=leresolver"
-      - "traefik.http.routers.registry-ui.service=registry-ui"
-      - "traefik.http.services.registry-ui.loadbalancer.server.port=80"
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.registry-ui.rule=Host(`$REGISTRY_HOST`)"
+        - "traefik.http.routers.registry-ui.entrypoints=websecure"
+        - "traefik.http.routers.registry-ui.tls.certresolver=leresolver"
+        - "traefik.http.routers.registry-ui.service=registry-ui"
+        - "traefik.http.services.registry-ui.loadbalancer.server.port=80"
 
 networks:
   web:
