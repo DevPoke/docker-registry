@@ -1,6 +1,6 @@
 # Pokestudio docker registry
 
-Docker Registry privato
+Private Docker Registry
 
 ---
 
@@ -16,7 +16,7 @@ cp .env.example .env
 htpasswd -Bc registry/.htpasswd-users <username> <htpasswd>
 ```
 
-# Docker login sul client server
+# Docker login
 
 ```shell
 docker login -u pokestudio registry.pokestudio.it
@@ -32,15 +32,12 @@ docker-compose up -d
 
 ## 2) Docker swarm
 
-Crea alcuni alias `docker-stack` per mantenere la compatibilità con docker-compose.
+Create aliases `docker-stack` to maintain compatibility with docker-compose.
 
 ```shell
 alias docker-stack='env $(cat .env | grep ^[A-Z] | xargs) docker stack'
-# Per deploy generici
 alias docker-stack-deploy='docker-stack deploy --compose-file docker-compose.yml ${PWD##*/}'
 ```
-
-Lancia il registry
 
 ```shell
 docker-stack-deploy
